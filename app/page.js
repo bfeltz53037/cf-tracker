@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 
 const STORAGE_KEY = "cf_tracker_data";
 
+// UI Components
 const Card = ({ children }) => (
   <div style={{ border: "1px solid #ddd", borderRadius: 12, padding: 12, marginBottom: 10, background: "#fff" }}>
     {children}
@@ -19,16 +20,17 @@ const Button = ({ children, onClick }) => (
       padding: 12,
       borderRadius: 12,
       border: "none",
-      background: "#2563eb",
+      background: "#16a34a",
       color: "#fff",
       fontWeight: 600,
-      marginTop: 6,
+      marginTop: 8,
     }}
   >
     {children}
   </button>
 );
 
+// Helpers
 const getMinutes = (timeStr) => {
   const match = timeStr.match(/(\d+)/);
   return match ? parseInt(match[1]) : 0;
@@ -40,6 +42,7 @@ const getColor = (intensity) => {
   return "#bbf7d0";
 };
 
+// ✅ FULL PLAN + LINKS
 const sections = [
   {
     title: "Warm-Up",
@@ -117,18 +120,96 @@ const sections = [
       },
     ],
   },
+  {
+    title: "Speed",
+    items: [
+      { name: "Short sprints", time: "5 min", reps: "5 reps (10–20 yd)", intensity: "high" },
+      { name: "Reaction runs", time: "3 min", reps: "3 reps", intensity: "high" },
+      { name: "Change direction", time: "3 min", reps: "3 reps", intensity: "high" },
+    ],
+  },
 ];
 
+// ✅ MAIN COMPONENT
 export default function Tracker() {
   const [checked, setChecked] = useState({});
+  const [streak, setStreak] = useState(0);
+  const [lastCompleted, setLastCompleted] = useState(null);
+
+  // ✅ LOAD SAVED DATA
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const data = JSON.parse(saved);
+      setChecked(data.checked || {});
+      setStreak(data.streak || 0);
+      setLastCompleted(data.lastCompleted || null);
+    }
+  }, []);
+
+  // ✅ SAVE DATA
+  useEffect(() => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ checked, streak, lastCompleted })
+    );
+  }, [checked, streak, lastCompleted]);
 
   const toggle = (key) =>
     setChecked((prev) => ({ ...prev, [key]: !prev[key] }));
+
+  const totalItems = sections.reduce((acc, s) => acc + s.items.length, 0);
+  const completed = Object.values(checked).filter(Boolean).length;
+
+  const totalTime = sections.reduce(
+    (acc, s) => acc + s.items.reduce((sum, item) => sum + getMinutes(item.time), 0),
+    0
+  );
+
+  // ✅ FINISH DAY + STREAK LOGIC
+  const completeDay = () => {
+    const today = new Date().toDateString();
+
+    if (completed >= totalItems * 0.8) {
+      if (lastCompleted) {
+        const prev = new Date(lastCompleted);
+        const diff = (new Date(today) - prev) / (1000 * 60 * 60 * 24);
+        setStreak(diff === 1 ? streak + 1 : 1);
+      } else {
+        setStreak(1);
+      }
+      setLastCompleted(today);
+    }
+
+    setChecked({});
+  };
 
   return (
     <div style={{ padding: 16, maxWidth: 420, margin: "0 auto" }}>
       <h1 style={{ textAlign: "center" }}>⚾ Daily Tracker</h1>
 
+      {/* ✅ STATS */}
+      <Card>
+        <CardContent style={{ display: "flex", justifyContent: "space-between" }}>
+          <div>
+            <small>✅ Progress</small>
+            <div><b>{completed}/{totalItems}</b></div>
+          </div>
+          <div>
+            <small>🔥 Streak</small>
+            <div><b>{streak}</b></div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* ✅ TOTAL TIME */}
+      <Card>
+        <CardContent style={{ textAlign: "center" }}>
+          ⏱ Estimated Workout Time: <b>{totalTime} min</b>
+        </CardContent>
+      </Card>
+
+      {/* ✅ SECTIONS */}
       {sections.map((section) => (
         <Card key={section.title}>
           <CardContent>
@@ -150,24 +231,12 @@ export default function Tracker() {
                   }}
                 >
                   <span>
-                    <b>{item.name}</b>
-                    <br />
-                    <small>
-                      {item.time} • {item.reps} • {item.intensity}
-                    </small>
+                    <b>{item.name}</b><br />
+                    <small>{item.time} • {item.reps} • {item.intensity}</small>
 
                     {item.link && (
                       <div>
-                        <a
-                          href={item.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{
-                            fontSize: 12,
-                            color: "#2563eb",
-                            fontWeight: 600,
-                          }}
-                        >
+                        {item.link}
                           ▶ Watch Drill
                         </a>
                       </div>
@@ -186,6 +255,16 @@ export default function Tracker() {
           </CardContent>
         </Card>
       ))}
+
+      {/* ✅ FINISH DAY */}
+      <Button onClick={completeDay}>✅ Finish Day</Button>
+
+      {/* ✅ MOTIVATION */}
+      <Card>
+        <CardContent style={{ textAlign: "center", fontSize: 12 }}>
+          🔔 Hustle every rep. Quality over quantity.
+        </CardContent>
+      </Card>
     </div>
   );
 }
