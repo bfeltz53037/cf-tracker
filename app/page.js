@@ -42,7 +42,7 @@ const getColor = (intensity) => {
   return "#bbf7d0";
 };
 
-// ✅ FULL PLAN + LINKS
+// ✅ TRAINING PLAN
 const sections = [
   {
     title: "Warm-Up",
@@ -136,7 +136,7 @@ export default function Tracker() {
   const [streak, setStreak] = useState(0);
   const [lastCompleted, setLastCompleted] = useState(null);
 
-  // ✅ LOAD SAVED DATA
+  // Load saved data
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -147,7 +147,7 @@ export default function Tracker() {
     }
   }, []);
 
-  // ✅ SAVE DATA
+  // Save data
   useEffect(() => {
     localStorage.setItem(
       STORAGE_KEY,
@@ -166,7 +166,7 @@ export default function Tracker() {
     0
   );
 
-  // ✅ FINISH DAY + STREAK LOGIC
+  // ✅ STREAK LOGIC
   const completeDay = () => {
     const today = new Date().toDateString();
 
@@ -188,7 +188,7 @@ export default function Tracker() {
     <div style={{ padding: 16, maxWidth: 420, margin: "0 auto" }}>
       <h1 style={{ textAlign: "center" }}>⚾ Daily Tracker</h1>
 
-      {/* ✅ STATS */}
+      {/* Stats */}
       <Card>
         <CardContent style={{ display: "flex", justifyContent: "space-between" }}>
           <div>
@@ -202,14 +202,14 @@ export default function Tracker() {
         </CardContent>
       </Card>
 
-      {/* ✅ TOTAL TIME */}
+      {/* Time */}
       <Card>
         <CardContent style={{ textAlign: "center" }}>
           ⏱ Estimated Workout Time: <b>{totalTime} min</b>
         </CardContent>
       </Card>
 
-      {/* ✅ SECTIONS */}
+      {/* Sections */}
       {sections.map((section) => (
         <Card key={section.title}>
           <CardContent>
@@ -236,7 +236,16 @@ export default function Tracker() {
 
                     {item.link && (
                       <div>
-                        {item.link}
+                        <a
+                          href={item.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            fontSize: 12,
+                            color: "#2563eb",
+                            fontWeight: 600,
+                          }}
+                        >
                           ▶ Watch Drill
                         </a>
                       </div>
@@ -256,10 +265,10 @@ export default function Tracker() {
         </Card>
       ))}
 
-      {/* ✅ FINISH DAY */}
+      {/* Finish */}
       <Button onClick={completeDay}>✅ Finish Day</Button>
 
-      {/* ✅ MOTIVATION */}
+      {/* Motivation */}
       <Card>
         <CardContent style={{ textAlign: "center", fontSize: 12 }}>
           🔔 Hustle every rep. Quality over quantity.
