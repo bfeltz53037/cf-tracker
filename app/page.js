@@ -1,7 +1,35 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+const Card = ({ children }) => (
+  <div style={{
+    border: "1px solid #ddd",
+    borderRadius: "12px",
+    padding: "12px",
+    marginBottom: "10px",
+    backgroundColor: "#fff"
+  }}>
+    {children}
+  </div>
+);
+
+const CardContent = ({ children }) => <div>{children}</div>;
+
+const Button = ({ children, onClick }) => (
+  <button
+    onClick={onClick}
+    style={{
+      width: "100%",
+      padding: "12px",
+      borderRadius: "12px",
+      border: "none",
+      backgroundColor: "#2563eb",
+      color: "white",
+      fontWeight: "600"
+    }}
+  >
+    {children}
+  </button>
+);
 
 const STORAGE_KEY = "cf_tracker_data";
 
