@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 
 const STORAGE_KEY = "cf_tracker_data";
 
-// UI Components
 const Card = ({ children }) => (
   <div style={{ border: "1px solid #ddd", borderRadius: 12, padding: 12, marginBottom: 10, background: "#fff" }}>
     {children}
@@ -30,7 +29,6 @@ const Button = ({ children, onClick }) => (
   </button>
 );
 
-// Helpers
 const getMinutes = (timeStr) => {
   const match = timeStr.match(/(\d+)/);
   return match ? parseInt(match[1]) : 0;
@@ -42,7 +40,6 @@ const getColor = (intensity) => {
   return "#bbf7d0";
 };
 
-// ✅ ALL DRILLS WITH LINKS INCLUDED
 const sections = [
   {
     title: "Warm-Up",
@@ -82,3 +79,113 @@ const sections = [
         time: "2 min",
         reps: "2x8",
         intensity: "light",
+        link: "https://www.youtube.com/watch?v=Z9K9s8zO0bQ",
+      },
+    ],
+  },
+  {
+    title: "Throwing",
+    items: [
+      { name: "Short catch", time: "3 min", reps: "easy throws", intensity: "light" },
+      { name: "Build distance", time: "5 min", reps: "gradual", intensity: "medium" },
+      { name: "Accurate throws", time: "5 min", reps: "5–10 reps", intensity: "medium" },
+    ],
+  },
+  {
+    title: "Outfield Drills",
+    items: [
+      {
+        name: "Drop step",
+        time: "3 min",
+        reps: "5 each side",
+        intensity: "medium",
+        link: "https://www.youtube.com/watch?v=7rAdbVEWEik",
+      },
+      {
+        name: "Fly balls",
+        time: "5 min",
+        reps: "10 reps",
+        intensity: "medium",
+        link: "https://www.youtube.com/watch?v=nnE7K4A4Vg4",
+      },
+      {
+        name: "Field & throw",
+        time: "5 min",
+        reps: "8–10 reps",
+        intensity: "medium",
+        link: "https://www.youtube.com/watch?v=ynikkQcF3Ec",
+      },
+    ],
+  },
+];
+
+export default function Tracker() {
+  const [checked, setChecked] = useState({});
+
+  const toggle = (key) =>
+    setChecked((prev) => ({ ...prev, [key]: !prev[key] }));
+
+  return (
+    <div style={{ padding: 16, maxWidth: 420, margin: "0 auto" }}>
+      <h1 style={{ textAlign: "center" }}>⚾ Daily Tracker</h1>
+
+      {sections.map((section) => (
+        <Card key={section.title}>
+          <CardContent>
+            <b>{section.title}</b>
+
+            {section.items.map((item, i) => {
+              const key = section.title + i;
+
+              return (
+                <div
+                  key={key}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginTop: 6,
+                    background: getColor(item.intensity),
+                    padding: 6,
+                    borderRadius: 8,
+                  }}
+                >
+                  <span>
+                    <b>{item.name}</b>
+                    <br />
+                    <small>
+                      {item.time} • {item.reps} • {item.intensity}
+                    </small>
+
+                    {item.link && (
+                      <div>
+                        <a
+                          href={item.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            fontSize: 12,
+                            color: "#2563eb",
+                            fontWeight: 600,
+                          }}
+                        >
+                          ▶ Watch Drill
+                        </a>
+                      </div>
+                    )}
+                  </span>
+
+                  <button
+                    onClick={() => toggle(key)}
+                    style={{ width: 24, height: 24, borderRadius: 12 }}
+                  >
+                    {checked[key] ? "✓" : ""}
+                  </button>
+                </div>
+              );
+            })}
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+}
