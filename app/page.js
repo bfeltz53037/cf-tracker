@@ -99,7 +99,7 @@ const sections = [
         time: "3 min",
         reps: "5 each side",
         intensity: "medium",
-        link: "https://www.youtube.com/watch?v=7rAdbVEWEik",
+        link: "https://www.youtube.com/watch?v=qvwkdxepqTk",
       },
       {
         name: "Fly balls",
