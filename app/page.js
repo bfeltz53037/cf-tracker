@@ -72,7 +72,7 @@ const sections = [
         time: "2 min",
         reps: "2x10",
         intensity: "light",
-        link: "https://www.youtube.com/watch?v=9wZ0Z8b3w9g",
+        link: "https://www.youtube.com/watch?v=JObYtU7Y7ag",
       },
       {
         name: "Y raises",
